@@ -11,7 +11,6 @@ app.use(express.json());
 
 let db;
 
-// Функция для подключения к БД и создания таблицы
 async function initDatabase() {
     db = await open({
         filename: './todo.db',
@@ -21,79 +20,60 @@ async function initDatabase() {
     await db.exec(`
         CREATE TABLE IF NOT EXISTS tasks (
             task_id TEXT PRIMARY KEY,
-            title TEXT NOT NULL,
-            description TEXT,
-            status TEXT NOT NULL
+            name TEXT NOT NULL,
+            date TEXT,
+            board_id INTEGER,
+            column INTEGER NOT NULL,
+            priority INTEGER
         )
     `);
-
-    console.log('База данных успешно подключена');
+    console.log('База данных подключена по новой схеме');
 }
 
-// получить все задачи из БД
 app.get('/api/tasks', async (req, res) => {
     try {
         const tasks = await db.all('SELECT * FROM tasks');
         res.json(tasks);
     } catch (error) {
+        console.error(error);
         res.status(500).json({ error: 'Ошибка при чтении из БД' });
     }
 });
 
-
-// добавить новую задачу в БД
 app.post('/api/tasks', async (req, res) => {
     try {
-        const { task_id, title, description, status } = req.body;
-
+        const { task_id, name, date, board_id, column, priority } = req.body;
         await db.run(
-            'INSERT INTO tasks (task_id, title, description, status) VALUES (?, ?, ?, ?)',
-            [task_id, title, description, status]
+            'INSERT INTO tasks (task_id, name, date, board_id, column, priority) VALUES (?, ?, ?, ?, ?, ?)',
+            [task_id, name, date, board_id, column, priority]
         );
-
         res.status(201).json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при добавлении задачи в БД' });
+        console.error(error);
+        res.status(500).json({ error: 'Ошибка при добавлении задачи' });
     }
 });
 
-// обновить статус (для Drag-and-Drop)
 app.patch('/api/tasks/:task_id', async (req, res) => {
     try {
         const { task_id } = req.params;
-        const { status } = req.body;
-
-        await db.run(
-            'UPDATE tasks SET status = ? WHERE task_id = ?',
-            [status, task_id]
-        );
-
+        const { column } = req.body; // Теперь обновляем поле column
+        await db.run('UPDATE tasks SET column = ? WHERE task_id = ?', [column, task_id]);
         res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при обновлении статуса' });
+        res.status(500).json({ error: 'Ошибка обновления' });
     }
 });
 
-// удалить задачу из БД
 app.delete('/api/tasks/:task_id', async (req, res) => {
     try {
-        const { task_id } = req.params;
-
-        await db.run(
-            'DELETE FROM tasks WHERE task_id = ?',
-            [task_id]
-        );
+        await db.run('DELETE FROM tasks WHERE task_id = ?', [req.params.task_id]);
         res.json({ success: true });
     } catch (error) {
-        res.status(500).json({ error: 'Ошибка при удалении задачи из БД' });
+        res.status(500).json({ error: 'Ошибка удаления' });
     }
 });
 
 initDatabase().then(() => {
-    app.listen(PORT, () => {
-        console.log(`Сервер запущен на http://localhost:${PORT}`);
-    });
+    app.listen(PORT, () => console.log(`Сервер: http://localhost:${PORT}`));
 });
-
-
-

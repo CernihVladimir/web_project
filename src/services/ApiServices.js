@@ -17,15 +17,14 @@ async fetchTasks() {
     }
 }
 
-// Обновление статуса задачи в БД
-async updateTaskStatus(task_id, status) {
+async updateTaskStatus(task_id, columnId) { 
     try {
         const response = await fetch(`${this.baseUrl}/tasks/${task_id}`, {
             method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ status })
-    });
-    return response.ok;
+            body: JSON.stringify({ column: columnId }) 
+        });
+        return response.ok;
     } catch (error) {
         console.error('ApiService error: ', error);
         return false;
