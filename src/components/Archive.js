@@ -21,7 +21,7 @@ export class Archive {
 
     render() {
         // Извлекаем только задачи со статусом архивировано
-        const archivedTasks = this.store.state.tasks.filter(t => t.is_archived);
+        const archivedTasks = this.store.state.tasks.filter(t => Number(t.column) === 99);
 
         let tableRows = archivedTasks.map(t => `
             <tr>
