@@ -44,7 +44,6 @@ async deleteTask(task_id) {
     }
 }
 
-// Создать новую задачу в БД
     async createTask(task) {
         try {
             const response = await fetch(`${this.baseUrl}/tasks`, {

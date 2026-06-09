@@ -4,7 +4,7 @@ export class Store {
     constructor() {
         this.state = { tasks: [] };
         this.listeners = [];
-        this.api = new ApiService(); // Используем класс для запросов [9]
+        this.api = new ApiService(); 
     }
 
     subscribe(listener) { this.listeners.push(listener); }
@@ -18,10 +18,10 @@ export class Store {
     async addTask(name, columnId) {
         try {
             const newTask = {
-                task_id: crypto.randomUUID(), // Генерация обязательного Primary Key [3]
+                task_id: crypto.randomUUID(), 
                 name: name,
                 date: new Date().toISOString().split('T'),
-                board_id: 1, // Пока жестко задаем 1 доску
+                board_id: 1, 
                 column: columnId,
                 priority: 1
             };
@@ -40,7 +40,6 @@ export class Store {
 
     async moveTask(taskId, columnId) {
         const prev = [...this.state.tasks];
-        // Оптимистичное обновление [10]
         this.state.tasks = this.state.tasks.map(t => 
             t.task_id === taskId ? { ...t, column: columnId } : t
         );
@@ -54,7 +53,7 @@ export class Store {
     }
 
     async archiveTask(taskId) {
-        await this.moveTask(taskId, 99); // 99 — условный ID колонки "Архив"
+        await this.moveTask(taskId, 99); 
     }
 
     async deleteTask(taskId) {

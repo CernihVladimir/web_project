@@ -57,7 +57,7 @@ app.post('/api/tasks', async (req, res) => {
 app.patch('/api/tasks/:task_id', async (req, res) => {
     try {
         const { task_id } = req.params;
-        const { column } = req.body; // Теперь обновляем поле column
+        const { column } = req.body; 
         await db.run('UPDATE tasks SET column = ? WHERE task_id = ?', [column, task_id]);
         res.json({ success: true });
     } catch (error) {

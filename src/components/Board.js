@@ -4,12 +4,10 @@ export class Board {
     constructor(containerId, store) {
         this.container = document.getElementById(containerId);
         this.store = store;
-        // Перерисовываем экран только если мы сейчас находимся на вкладке Доски
         this.store.subscribe(() => {
             if (window.location.pathname === '/') this.render();
         });
         
-        // Жесткая конфигурация колонок (каждая доска может иметь свои ID)
         this.columns = [
             { id: 0, name: 'Бэклог' },
             { id: 1, name: 'В работе' },
@@ -18,27 +16,23 @@ export class Board {
     }
 
     bindEvents() {
-        // Вешаем события создания задач на кнопки колонок
         this.columns.forEach(col => {
             this.container.querySelector(`.add-btn-${col.id}`).addEventListener('click', () => {
                 const name = prompt('Название задачи:');
                 if (name) this.store.addTask(name, col.id);
             });
 
-            // Настройка зон Drop для перетаскивания карточек
             const zone = this.container.querySelector(`.zone-${col.id}`);
             zone.addEventListener('dragover', e => e.preventDefault());
             zone.addEventListener('drop', async e => {
                 e.preventDefault();
-                const taskId = e.dataTransfer.getData('text/plain'); // УБРАЛИ parseInt [1]
+                const taskId = e.dataTransfer.getData('text/plain'); 
                 this.store.moveTask(taskId, col.id); 
             });
         });
 
-        // Просим каждую карточку привязать свои внутренние события (клики, drag)
         const activeTasks = this.store.state.tasks.filter(t => !t.is_archived);
         activeTasks.forEach(task => {
-            // Ищем по task_id, а не по id [4]
             const cardEl = this.container.querySelector(`[data-id="${task.task_id}"]`); 
             if (cardEl) {
                 new TaskCard(task, this.store).bindEvents(cardEl);
@@ -47,7 +41,6 @@ export class Board {
             }
 
     render() {
-        // Фильтруем только активные (не архивированные) задачи
         const activeTasks = this.store.state.tasks.filter(t => !t.is_archived);
 
         const html = `

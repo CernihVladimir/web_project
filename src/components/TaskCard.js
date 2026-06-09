@@ -6,7 +6,7 @@ export class TaskCard {
 
     bindEvents(element) {
         element.addEventListener('dragstart', (e) => {
-            e.dataTransfer.setData('text/plain', this.task.task_id); // Используем task_id
+            e.dataTransfer.setData('text/plain', this.task.task_id); 
         });
 
         element.querySelector('.archive-btn').addEventListener('click', () => {

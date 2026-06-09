@@ -5,7 +5,7 @@ export class Router {
     }
 
     init() {
-        // Слушаем кнопки "Вперед/Назад" в браузере
+        // Слушаем кнопки Вперед/Назад в браузере
         window.addEventListener('popstate', () => this.handleRoute());
 
         // Перехватываем клики по ссылкам навигации
@@ -26,7 +26,7 @@ export class Router {
 
     handleRoute() {
         const path = window.location.pathname;
-        // Если роут не найден, отправляем на главную (на доску)
+        // Если роут не найден отправляем на главную 
         const routeComponent = this.routes[path] || this.routes['/'];
         routeComponent.render();
     }

@@ -3,16 +3,13 @@ export class Archive {
         this.container = document.getElementById(containerId);
         this.store = store;
         this.store.subscribe(() => {
-            // Перерисовываем только если активен роут архива
             if (window.location.pathname === '/archive') this.render();
         });
     }
 
     bindEvents() {
-        // Кнопка окончательного удаления из архива
         this.container.querySelectorAll('.delete-archive-btn').forEach(btn => {
             btn.addEventListener('click', () => {
-                // ИСПРАВЛЕНО: Убрали parseInt, так как ID теперь строка (UUID)
                 const id = btn.dataset.id; 
                 if (confirm('Удалить задачу навсегда?')) {
                     this.store.deleteTask(id);
@@ -22,7 +19,6 @@ export class Archive {
     }
 
     render() {
-        // Извлекаем только задачи со статусом архивировано (колонку 99)
         const archivedTasks = this.store.state.tasks.filter(t => Number(t.column) === 99);
 
         let tableRows = archivedTasks.map(t => `
