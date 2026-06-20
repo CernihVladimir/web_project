@@ -1,7 +1,5 @@
-// отвечает только за сетевые запросы к БД/серверу
-
 export class ApiService {
-    constructor(baseUrl = 'http://localhost:3000/api') {
+     constructor(baseUrl = 'https://webproject-production-39b5.up.railway.app/api') {
         this.baseUrl = baseUrl;
 }
 
