@@ -1,5 +1,5 @@
 export class ApiService {
-     constructor(baseUrl = 'https://webproject-production-39b5.up.railway.app/api') {
+     constructor(baseUrl = 'https://webproject-production-5011.up.railway.app/api') {
         this.baseUrl = baseUrl;
 }
 
